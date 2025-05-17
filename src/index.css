@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.weather-container {
+  @apply flex flex-col items-center justify-center p-4;
+   background-image: url("assets/images/bg-dark.png");
+}
+
+.input-bg{
+  @apply flex-grow px-4 rounded-[20px] w-full pt-6 pb-1 px-4 ;
+  background-color: #1A1A1A50;
+  color: #fff;
+  height: 60px;
+}
+
+.icon-circle {
+    border: 2px solid lightgrey;
+    padding: 8px;
+    border-radius: 100%;
+}
