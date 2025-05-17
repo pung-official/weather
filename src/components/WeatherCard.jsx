@@ -164,26 +164,35 @@ function WeatherCard() {
         {weatherData && (
           <>
             {/* Weather Icon */}
-            <div className="absolute top-[-100px] right-[10px] md:top-[-120px] md:right-[25px] w-[200px] h-[200px] md:w-[270px] md:h-[270px]">
+            <div className="absolute top-[-80px] right-[10px] md:top-[-120px] md:right-[25px] w-[200px] h-[200px] md:w-[370px] md:h-[370px]">
               <img src={weatherData.weather.toLowerCase() === "clouds" ? "/images/cloud.png" : "/images/sun.png"} alt="Weather Icon" className="w-full h-full object-contain" />
             </div>
 
             {/* Today's Weather */}
             <div>
               <h2 className="text-md">Today's Weather</h2>
-              <h1 className="text-5xl md:text-9xl font-bold mt-2">{weatherData.temp}°</h1>
+              <h1 className="text-7xl md:text-9xl font-bold mt-2">{weatherData.temp}°</h1>
               <div className="text-md mt-2">
-                <p>
-                  H: {weatherData.tempMax}° L: {weatherData.tempMin}°
-                </p>
+                <p>H: {weatherData.tempMax}° L: {weatherData.tempMin}°</p>
               </div>
-              <div className="flex flex-row gap-4 mt-2 text-md">
-                <p className="font-bold">
-                  {weatherData.cityName}, {weatherData.country}
-                </p>
-                <p>{weatherData.date}</p>
-                <p>Humidity: {weatherData.humidity}%</p>
-                <p>{weatherData.weather}</p>
+
+              {/* Location and Details Section */}
+              <div className="flex flex-col md:flex-row justify-between md:gap-4">
+                {/* City Name */}
+                <div className="md:w-1/4">
+                  <p className="font-bold mb-2 md:mb-0">
+                    {weatherData.cityName}, {weatherData.country}
+                  </p>
+                </div>
+                
+                {/* Weather Details - Stack on mobile, inline on desktop */}
+                <div className="w-full md:w-3/4 text-right md:mt-0 mt-[-80px]">
+                  <div className="text-md flex flex-col-reverse md:flex-row md:justify-between">
+                    <p>{weatherData.date}</p>
+                    <p>Humidity: {weatherData.humidity}%</p>
+                    <p>{weatherData.weather}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </>

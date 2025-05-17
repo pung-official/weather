@@ -10,9 +10,9 @@ function SearchHistory({ cities, onSearch, onDelete }) {
       <ul className="space-y-4">
         {cities.map((city, idx) => (
           <li key={idx} className="flex justify-between items-center bg-white/10 px-4 py-2 rounded-xl">
-            <div>
+            <div className="md:flex items-center justify-between md:flex-1 md:pr-2">
               <p className="font-medium">{city.name}</p>
-              <p className="text-xs">{city.date}</p>
+              <p className="text-sm">{city.date}</p>
             </div>
             <div className="flex gap-2">
               <button 

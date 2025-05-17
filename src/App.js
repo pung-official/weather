@@ -3,7 +3,7 @@ import WeatherCard from "./components/WeatherCard";
 
 function App() {
   return (
-    <div className="app">
+    <div className="app font-sans">
       <WeatherCard />
     </div>
   );
