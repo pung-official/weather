@@ -152,7 +152,7 @@ function WeatherCard() {
           <label className="absolute left-4 top-1 text-md text-[#FFFFFF66]">Country</label>
         </div>
 
-        <button className="bg-[#28124D] px-5 rounded-[20px] h-[56px]" onClick={handleSearch} disabled={loading}>
+        <button className="bg-[#28124D] px-5 rounded-[20px] h-[60px]" onClick={handleSearch} disabled={loading}>
           <FaSearch className="w-5 h-5 text-white" />
         </button>
       </div>
@@ -164,7 +164,7 @@ function WeatherCard() {
         {weatherData && (
           <>
             {/* Weather Icon */}
-            <div className="absolute top-[-120px] right-[25px] w-[270px] h-[270px]">
+            <div className="absolute top-[-100px] right-[10px] md:top-[-120px] md:right-[25px] w-[200px] h-[200px] md:w-[270px] md:h-[270px]">
               <img src={weatherData.weather.toLowerCase() === "clouds" ? "/images/cloud.png" : "/images/sun.png"} alt="Weather Icon" className="w-full h-full object-contain" />
             </div>
 

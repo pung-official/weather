@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 .weather-container {
-  @apply flex flex-col items-center justify-center p-4;
+  @apply flex flex-col items-center justify-center min-h-screen p-4;
    background-image: url("assets/images/bg-dark.png");
+   background-repeat: no-repeat;
+   background-size: cover
 }
 
 .input-bg{
