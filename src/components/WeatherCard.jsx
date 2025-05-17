@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
 import SearchHistory from "./SearchHistory";
 
 const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
@@ -21,11 +20,10 @@ function WeatherCard() {
     fetchCurrentLocation();
   }, []);
 
-  // Add Search History
+  // Use the History Location to search again
   const handleHistorySearch = (cityName) => {
     const cityOnly = cityName.split(',')[0];
-    setSearchInput(cityOnly);
-    fetchWeatherData();
+    fetchWeatherData(cityOnly);
   };
 
   // Delete Search History
@@ -86,14 +84,15 @@ function WeatherCard() {
   };
 
   // Button to trigger location weather
-  const fetchWeatherData = async () => {
-    if (!searchInput) return;
+  const fetchWeatherData = async (city = null) => {
+    const cityToSearch = city || searchInput;
+    if (!cityToSearch) return;
 
     setLoading(true);
     setError(null);
 
     const xhr = new XMLHttpRequest();
-    const url = `${BASE_URL}?q=${searchInput}&appid=${API_KEY}&units=metric`;
+    const url = `${BASE_URL}?q=${cityToSearch}&appid=${API_KEY}&units=metric`;
 
     xhr.open("GET", url, true);
 
