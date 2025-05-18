@@ -24,7 +24,7 @@ export function SearchBar({ onSearch, isLoading, error, setError, searchInput,
             <input 
             id="country-input"
             type="text" 
-            className={`input-bg ${isDark ? 'text-white bg-[#1A1A1A]/50' : 'text-black bg-[#ffffff]/20'}`}
+            className={`input-bg ${isDark ? 'text-white bg-[#1A1A1A]/50' : 'text-black bg-white/20'}`}
             value={searchInput} 
             onChange={handleChange}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)} 

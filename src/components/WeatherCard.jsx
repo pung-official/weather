@@ -108,7 +108,7 @@ function WeatherCard() {
       </div>
       <SearchBar onSearch={handleSearch} isLoading={loading} error={error} setError={setError} searchInput={searchInput} setSearchInput={setSearchInput}/>
        <div className={`backdrop-blur-[20px] rounded-3xl p-6 w-full max-w-2xl relative
-        ${isDark ? 'bg-[#1A1A1A]/30 text-white' : 'bg-[#FFFFFF]/20 text-black border border-white/50'}`}>
+        ${isDark ? 'bg-[#1A1A1A]/30 text-white' : 'bg-white/20 text-black border border-white/50'}`}>
         <WeatherDisplay weatherData={weatherData} />
         <SearchHistory 
           cities={searchHistory}
