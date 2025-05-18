@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap');
 
 .weather-container {
-  @apply flex flex-col items-center justify-center min-h-screen p-4;
+  @apply flex flex-col items-center min-h-screen p-4;
    background-image: url("assets/images/bg-dark.png");
    background-repeat: no-repeat;
    background-size: cover
