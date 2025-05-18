@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { FaSearch } from "react-icons/fa";
+import { SearchBar } from "./SearchBar";
+import { WeatherDisplay } from "./WeatherDisplay";
 import SearchHistory from "./SearchHistory";
-
-const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
-const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+import { WeatherAPI } from '../services/WeatherAPI';
 
 function WeatherCard() {
-  const [searchInput, setSearchInput] = useState("");
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -15,194 +13,75 @@ function WeatherCard() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  useEffect(() => {
-    // First Load to show current location weather
-    fetchCurrentLocation();
-  }, []);
-
-  // Use the History Location to search again
-  const handleHistorySearch = (cityName) => {
-    const cityOnly = cityName.split(',')[0];
-    fetchWeatherData(cityOnly);
-  };
-
-  // Delete Search History
-  const handleHistoryDelete = (index) => {
-    const newHistory = searchHistory.filter((_, idx) => idx !== index);
-    setSearchHistory(newHistory);
-    localStorage.setItem('weatherHistory', JSON.stringify(newHistory));
-  };
-
-  // Fetch current location weather
-  const fetchCurrentLocation = () => {
-    if ("geolocation" in navigator) {
-      setLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-
-          const xhr = new XMLHttpRequest();
-          const url = `${BASE_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-
-          xhr.open("GET", url, true);
-
-          xhr.onload = function () {
-            if (xhr.status === 200) {
-              const data = JSON.parse(xhr.responseText);
-              setWeatherData({
-                temp: Math.round(data.main.temp),
-                tempMax: Math.round(data.main.temp_max),
-                tempMin: Math.round(data.main.temp_min),
-                humidity: data.main.humidity,
-                cityName: data.name,
-                country: data.sys.country,
-                weather: data.weather[0].main,
-                date: new Date().toLocaleString(),
-              });
-              setLoading(false);
-            } else {
-              setError("Failed to fetch weather data");
-              setLoading(false);
-            }
-          };
-
-          xhr.onerror = function () {
-            setError("Network error occurred");
-            setLoading(false);
-          };
-
-          xhr.send();
-        },
-        (err) => {
-          setError("Failed to get location: " + err.message);
-          setLoading(false);
-        }
-      );
-    } else {
-      setError("Geolocation is not supported by your browser");
-    }
-  };
-
-  // Button to trigger location weather
-  const fetchWeatherData = async (city = null) => {
-    const cityToSearch = city || searchInput;
-    if (!cityToSearch) return;
-
-    setLoading(true);
-    setError(null);
-
-    const xhr = new XMLHttpRequest();
-    const url = `${BASE_URL}?q=${cityToSearch}&appid=${API_KEY}&units=metric`;
-
-    xhr.open("GET", url, true);
-
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        const data = JSON.parse(xhr.responseText);
-        setWeatherData({
-          temp: Math.round(data.main.temp),
-          tempMax: Math.round(data.main.temp_max),
-          tempMin: Math.round(data.main.temp_min),
-          humidity: data.main.humidity,
-          cityName: data.name,
-          country: data.sys.country,
-          weather: data.weather[0].main,
-          date: new Date().toLocaleString(),
-        });
-
-
-         // Add to search history
-        const newHistory = [
-          { 
-            name: `${data.name}, ${data.sys.country}`, 
-            date: new Date().toLocaleString() 
-          },
-          ...searchHistory
-        ].slice(0, 5); // Keep only last 5 searches
-        setSearchHistory(newHistory);
-        localStorage.setItem('weatherHistory', JSON.stringify(newHistory));
-      
-        
-        setLoading(false);
-      } else {
-        setError("City not found");
+  // First Load to show current location weather
+    useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        setLoading(true);
+        const data = await WeatherAPI.fetchByLocation();
+        updateWeatherData(data);
+      } catch (err) {
+        setError(typeof err === 'string' ? err : 'Failed to fetch location');
+      } finally {
         setLoading(false);
       }
     };
 
-    xhr.onerror = function () {
-      setError("Network error occurred");
+    fetchLocation();
+  }, []);
+
+  const handleSearch = async (cityName) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await WeatherAPI.fetchByCity(cityName);
+      updateWeatherData(data);
+      updateSearchHistory(data);
+    } catch (err) {
+      setError(typeof err === 'string' ? err : 'City not found');
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const updateWeatherData = (data) => {
+    setWeatherData({
+      temp: Math.round(data.main.temp),
+      tempMax: Math.round(data.main.temp_max),
+      tempMin: Math.round(data.main.temp_min),
+      humidity: data.main.humidity,
+      cityName: data.name,
+      country: data.sys.country,
+      weather: data.weather[0].main,
+      date: new Date().toLocaleString(),
+    });
+  };
+
+    const updateSearchHistory = (data) => {
+      const newHistory = [
+        { 
+          name: `${data.name}, ${data.sys.country}`, 
+          date: new Date().toLocaleString() 
+        },
+        ...searchHistory
+      ].slice(0, 5);
+      setSearchHistory(newHistory);
+      localStorage.setItem('weatherHistory', JSON.stringify(newHistory));
     };
 
-    xhr.send();
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchWeatherData();
-  };
-
-  return (
+    return (
     <div className="weather-container">
-      {/* Search bar */}
-      <div className="flex w-full max-w-2xl mb-[6rem] gap-4">
-        <div className="relative flex-1">
-          <input type="text" className="input-bg" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}/>
-          <label className="absolute left-4 top-1 text-md text-[#FFFFFF66]">Country</label>
-        </div>
-
-        <button className="bg-[#28124D] px-5 rounded-[20px] h-[60px]" onClick={handleSearch} disabled={loading}>
-          <FaSearch className="w-5 h-5 text-white" />
-        </button>
-      </div>
-
-      {/* Weather card */}
+      <SearchBar onSearch={handleSearch} isLoading={loading} error={error} setError={setError}/>
       <div className="bg-[#1A1A1A4D] backdrop-blur-lg rounded-3xl p-6 w-full max-w-2xl text-white relative">
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-
-        {weatherData && (
-          <>
-            {/* Weather Icon */}
-            <div className="absolute top-[-80px] right-[10px] md:top-[-120px] md:right-[25px] w-[200px] h-[200px] md:w-[370px] md:h-[370px]">
-              <img src={weatherData.weather.toLowerCase() === "clouds" ? "/images/cloud.png" : "/images/sun.png"} alt="Weather Icon" className="w-full h-full object-contain" />
-            </div>
-
-            {/* Today's Weather */}
-            <div>
-              <h2 className="text-md">Today's Weather</h2>
-              <h1 className="text-7xl md:text-9xl font-bold mt-2">{weatherData.temp}°</h1>
-              <div className="text-md mt-2">
-                <p>H: {weatherData.tempMax}° L: {weatherData.tempMin}°</p>
-              </div>
-
-              {/* Location and Details Section */}
-              <div className="flex flex-col md:flex-row justify-between md:gap-4">
-                {/* City Name */}
-                <div className="md:w-1/4">
-                  <p className="font-bold mb-2 md:mb-0">
-                    {weatherData.cityName}, {weatherData.country}
-                  </p>
-                </div>
-                
-                {/* Weather Details - Stack on mobile, inline on desktop */}
-                <div className="w-full md:w-3/4 text-right md:mt-0 mt-[-80px]">
-                  <div className="text-md flex flex-col-reverse md:flex-row md:justify-between">
-                    <p>{weatherData.date}</p>
-                    <p>Humidity: {weatherData.humidity}%</p>
-                    <p>{weatherData.weather}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* Search History */}
+        <WeatherDisplay weatherData={weatherData} />
         <SearchHistory 
           cities={searchHistory}
-          onSearch={handleHistorySearch}
-          onDelete={handleHistoryDelete}
+          onSearch={handleSearch}
+          onDelete={(index) => {
+            const newHistory = searchHistory.filter((_, idx) => idx !== index);
+            setSearchHistory(newHistory);
+            localStorage.setItem('weatherHistory', JSON.stringify(newHistory));
+          }}
         />
       </div>
     </div>
