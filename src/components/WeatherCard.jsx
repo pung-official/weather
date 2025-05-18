@@ -8,6 +8,7 @@ import { FaMoon, FaSun } from 'react-icons/fa';
 
 function WeatherCard() {
   const { isDark, toggleTheme } = useTheme();
+   const [searchInput, setSearchInput] = useState("");
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -70,6 +71,7 @@ function WeatherCard() {
         ...searchHistory
       ].slice(0, 5);
       setSearchHistory(newHistory);
+      setSearchInput(data.name)
       localStorage.setItem('weatherHistory', JSON.stringify(newHistory));
     };
 
@@ -88,7 +90,7 @@ function WeatherCard() {
           )}
         </button>
       </div>
-      <SearchBar onSearch={handleSearch} isLoading={loading} error={error} setError={setError}/>
+      <SearchBar onSearch={handleSearch} isLoading={loading} error={error} setError={setError} searchInput={searchInput} setSearchInput={setSearchInput}/>
        <div className={`backdrop-blur-[20px] rounded-3xl p-6 w-full max-w-2xl relative
         ${isDark ? 'bg-[#1A1A1A]/30 text-white' : 'bg-[#FFFFFF]/20 text-black border border-white/50'}`}>
         <WeatherDisplay weatherData={weatherData} />

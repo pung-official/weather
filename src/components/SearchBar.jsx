@@ -1,10 +1,9 @@
 import { useTheme } from '../context/ThemeContext';
-import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
-export function SearchBar({ onSearch, isLoading, error, setError }) {
+export function SearchBar({ onSearch, isLoading, error, setError, searchInput, 
+  setSearchInput  }) {
   const { isDark } = useTheme();
-  const [searchInput, setSearchInput] = useState("");
 
    // Clear error when typing
     const handleChange = (e) => {
@@ -23,13 +22,16 @@ export function SearchBar({ onSearch, isLoading, error, setError }) {
       <div className="flex gap-4 w-full">
         <div className="relative flex-1">
             <input 
+            id="country-input"
             type="text" 
             className={`input-bg ${isDark ? 'text-white bg-[#1A1A1A]/50' : 'text-black bg-[#ffffff]/20'}`}
             value={searchInput} 
             onChange={handleChange}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)} 
           />
-          <label className={`absolute left-4 top-1 text-md 
+          <label 
+            htmlFor="country-input"
+            className={`absolute left-4 top-1 text-md 
             ${isDark ? 'text-[#FFFFFF66]' : 'text-[#00000066]'}`}>
             Country
           </label>
