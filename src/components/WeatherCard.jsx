@@ -35,6 +35,7 @@ function WeatherCard() {
     fetchLocation();
   }, []);
 
+  // Handle search input change
   const handleSearch = async (cityName) => {
     try {
       setLoading(true);
@@ -49,6 +50,7 @@ function WeatherCard() {
     }
   };
 
+  // Update weather data
   const updateWeatherData = (data) => {
     setWeatherData({
       temp: Math.round(data.main.temp),
