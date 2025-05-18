@@ -58,7 +58,14 @@ function WeatherCard() {
       cityName: data.name,
       country: data.sys.country,
       weather: data.weather[0].main,
-      date: new Date().toLocaleString(),
+      date: new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      })
     });
   };
 
@@ -66,7 +73,14 @@ function WeatherCard() {
       const newHistory = [
         { 
           name: `${data.name}, ${data.sys.country}`, 
-          date: new Date().toLocaleString() 
+          date: new Date().toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        })
         },
         ...searchHistory
       ].slice(0, 5);
@@ -80,7 +94,7 @@ function WeatherCard() {
       <div className="w-full min-h-[40px] mb-4">
         <button
           onClick={toggleTheme}
-          className={`fixed top-4 right-4 p-2 rounded-full
+          className={`z-10 fixed top-4 right-4 p-2 rounded-full
             ${isDark ? 'bg-white/10' : 'bg-black/10'}`}
         >
           {isDark ? (
