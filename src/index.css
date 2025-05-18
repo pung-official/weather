@@ -6,20 +6,31 @@
 
 .weather-container {
   @apply flex flex-col items-center min-h-screen p-4;
-   background-image: url("assets/images/bg-dark.png");
    background-repeat: no-repeat;
    background-size: cover
 }
 
+.bg-dark{
+  background-image: url("assets/images/bg-dark.png");
+}
+
+.bg-light{
+  background-image: url("assets/images/bg-light.png");
+}
+
 .input-bg{
   @apply flex-grow px-4 rounded-[20px] w-full pt-6 pb-1 focus:outline-none;
-  background-color: #1A1A1A50;
-  color: #fff;
   height: 60px;
 }
 
-.icon-circle {
-    border: 2px solid lightgrey;
+.bg-light .icon-circle {
+    border: 2px solid #fff;
+    padding: 8px;
+    border-radius: 100%;
+}
+
+.bg-dark .icon-circle {
+    border: 2px solid #FFFFFF66;
     padding: 8px;
     border-radius: 100%;
 }

@@ -3,14 +3,18 @@ import { SearchBar } from "./SearchBar";
 import { WeatherDisplay } from "./WeatherDisplay";
 import SearchHistory from "./SearchHistory";
 import { WeatherAPI } from '../services/WeatherAPI';
+import { useTheme } from '../context/ThemeContext';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 function WeatherCard() {
+  const { isDark, toggleTheme } = useTheme();
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchHistory, setSearchHistory] = useState(() => {
     const saved = localStorage.getItem('weatherHistory');
     return saved ? JSON.parse(saved) : [];
+    
   });
 
   // First Load to show current location weather
@@ -70,9 +74,23 @@ function WeatherCard() {
     };
 
     return (
-    <div className="weather-container">
+    <div className={`weather-container font-sans ${isDark ? 'bg-dark' : 'bg-light'}`}>
+      <div className="w-full min-h-[40px] mb-4">
+        <button
+          onClick={toggleTheme}
+          className={`fixed top-4 right-4 p-2 rounded-full
+            ${isDark ? 'bg-white/10' : 'bg-black/10'}`}
+        >
+          {isDark ? (
+            <FaSun className="w-6 h-6 text-yellow-400" />
+          ) : (
+            <FaMoon className="w-6 h-6 text-gray-600" />
+          )}
+        </button>
+      </div>
       <SearchBar onSearch={handleSearch} isLoading={loading} error={error} setError={setError}/>
-      <div className="bg-[#1A1A1A4D] backdrop-blur-lg rounded-3xl p-6 w-full max-w-2xl text-white relative">
+       <div className={`backdrop-blur-[20px] rounded-3xl p-6 w-full max-w-2xl relative
+        ${isDark ? 'bg-[#1A1A1A]/30 text-white' : 'bg-[#FFFFFF]/20 text-black border border-white/50'}`}>
         <WeatherDisplay weatherData={weatherData} />
         <SearchHistory 
           cities={searchHistory}

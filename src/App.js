@@ -1,11 +1,11 @@
-import React from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import WeatherCard from "./components/WeatherCard";
 
 function App() {
   return (
-    <div className="app font-sans">
+    <ThemeProvider>
       <WeatherCard />
-    </div>
+    </ThemeProvider>
   );
 }
 
